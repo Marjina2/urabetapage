@@ -14,8 +14,11 @@ async function copyFiles() {
       });
     }
 
-    // Copy Netlify configuration
+    // Copy Netlify configuration and functions
     await fs.copy('netlify.toml', 'out/netlify.toml');
+    if (fs.existsSync('netlify/functions')) {
+      await fs.copy('netlify/functions', 'out/netlify/functions');
+    }
 
     console.log('Files copied successfully');
   } catch (err) {
