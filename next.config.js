@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: false,
+  swcMinify: true,
   images: {
     unoptimized: true,
   },
@@ -14,9 +14,6 @@ const nextConfig = {
       fs: false,
     };
     return config;
-  },
-  experimental: {
-    forceSwcTransforms: false
   }
 }
 

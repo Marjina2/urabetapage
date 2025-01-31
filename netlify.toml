@@ -76,7 +76,7 @@
 
 [[redirects]]
   from = "/onboarding"
-  to = "/onboarding/index.html"
+  to = "/"
   status = 200
   conditions = {Role = ["authenticated"]}
   force = true
