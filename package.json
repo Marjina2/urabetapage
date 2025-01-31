@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev3001": "next dev -p 3001",
-    "build": "next build",
+    "build": "node scripts/create-favicon.js && next build && npm run copy-files",
     "postbuild": "node scripts/copy-files.js && node scripts/copy-netlify.js",
     "generate-noise": "node scripts/generateNoise.js",
     "create-nojekyll": "node -e \"require('fs').writeFileSync('out/.nojekyll', '')\"",
@@ -16,7 +16,8 @@
     "lint": "next lint",
     "clean": "rimraf .next && rimraf node_modules/.cache",
     "rebuild": "npm run clean && npm install && npm run build",
-    "copy-files": "node scripts/copy-files.js"
+    "copy-files": "node scripts/copy-files.js",
+    "create-favicon": "node scripts/create-favicon.js"
   },
   "keywords": [],
   "author": "",

@@ -5,6 +5,7 @@ async function copyFiles() {
   try {
     const outDir = path.join(process.cwd(), 'out');
     const nextDir = path.join(process.cwd(), '.next');
+    const publicDir = path.join(process.cwd(), 'public');
 
     // Ensure directories exist
     await fs.ensureDir(outDir);
@@ -19,9 +20,20 @@ async function copyFiles() {
     }
 
     // Copy public directory if it exists
-    const publicDir = path.join(process.cwd(), 'public');
     if (fs.existsSync(publicDir)) {
       await fs.copy(publicDir, outDir, {
+        overwrite: true,
+        errorOnExist: false,
+        filter: (src) => !src.includes('node_modules')
+      });
+    }
+
+    // Ensure favicon exists
+    const faviconSource = path.join(process.cwd(), 'public', 'favicon.ico');
+    const faviconDest = path.join(outDir, 'favicon.ico');
+    
+    if (fs.existsSync(faviconSource)) {
+      await fs.copy(faviconSource, faviconDest, {
         overwrite: true,
         errorOnExist: false
       });
