@@ -1,39 +1,27 @@
+import { FC } from 'react'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import { supabase } from '@/lib/supabaseClient'
+import Head from 'next/head'
+import Navigation from '@/components/Navigation'
 
-const JoinWithReferral = () => {
+const JoinPage: FC = () => {
   const router = useRouter()
   const { email } = router.query
 
-  useEffect(() => {
-    const handleReferral = async () => {
-      if (email) {
-        // Verify the referrer exists
-        const { data: referrer } = await supabase
-          .from('beta_registrations')
-          .select('email')
-          .eq('email', email)
-          .single()
-
-        if (referrer) {
-          router.push(`/betaregistrations?ref=${encodeURIComponent(email as string)}`)
-        } else {
-          router.push('/betaregistrations')
-        }
-      }
-    }
-
-    if (email) {
-      handleReferral()
-    }
-  }, [email, router])
-
   return (
-    <div className="h-screen bg-black flex items-center justify-center">
-      <div className="text-purple-400 animate-pulse">Loading...</div>
-    </div>
+    <>
+      <Head>
+        <title>Join | URA</title>
+        <meta name="description" content="Join URA" />
+      </Head>
+
+      <div className="min-h-screen bg-black text-white">
+        <Navigation />
+        <div className="flex items-center justify-center h-screen">
+          <p className="text-gray-400">Join page coming soon...</p>
+        </div>
+      </div>
+    </>
   )
 }
 
-export default JoinWithReferral 
+export default JoinPage 
