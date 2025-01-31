@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "dev3001": "next dev -p 3001",
-    "build": "next build && npm run copy-files-prod",
+    "build": "next build",
+    "postbuild": "node scripts/copy-files.js",
     "copy-files-prod": "cross-env NODE_ENV=production node scripts/copy-files.js",
     "generate-noise": "node scripts/generateNoise.js",
     "create-nojekyll": "node -e \"require('fs').writeFileSync('out/.nojekyll', '')\"",
