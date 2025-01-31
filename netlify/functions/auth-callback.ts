@@ -1,8 +1,11 @@
-import { Handler } from '@netlify/functions';
+import { Handler, HandlerEvent, HandlerContext } from '@netlify/functions';
 import { createClient } from '@supabase/supabase-js';
 import cookie from 'cookie';
 
-export const handler: Handler = async (event, context) => {
+export const handler: Handler = async (
+  event: HandlerEvent,
+  context: HandlerContext
+) => {
   try {
     // Add error checking for environment variables
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
