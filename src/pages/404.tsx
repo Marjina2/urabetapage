@@ -1,9 +1,21 @@
-import { FC } from 'react'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Link from 'next/link'
 import Navigation from '@/components/Navigation'
 
-const NotFound: FC = () => {
+export default function Custom404() {
+  const router = useRouter()
+
+  useEffect(() => {
+    // Redirect to home page after a short delay
+    const timeout = setTimeout(() => {
+      router.push('/')
+    }, 3000)
+
+    return () => clearTimeout(timeout)
+  }, [router])
+
   return (
     <>
       <Head>
@@ -18,7 +30,7 @@ const NotFound: FC = () => {
             404 - Page Not Found
           </h1>
           <p className="text-gray-400 mb-8">
-            The page you're looking for doesn't exist.
+            Redirecting to home page...
           </p>
           <Link 
             href="/"
@@ -30,6 +42,4 @@ const NotFound: FC = () => {
       </div>
     </>
   )
-}
-
-export default NotFound 
+} 

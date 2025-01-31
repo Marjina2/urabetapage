@@ -4,6 +4,11 @@ import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 
 export async function middleware(request: NextRequest) {
   try {
+    // Don't run middleware on static files
+    if (request.nextUrl.pathname.includes('.')) {
+      return NextResponse.next()
+    }
+
     const path = request.nextUrl.pathname
     const res = NextResponse.next()
     
@@ -27,6 +32,11 @@ export async function middleware(request: NextRequest) {
     const publicPaths = ['/', '/auth/callback', '/login', '/register', '/terms', '/privacy']
     const isPublicPath = publicPaths.includes(path)
 
+    // If public path, allow access
+    if (isPublicPath) {
+      return res
+    }
+
     // If trying to access onboarding directly, allow it
     if (path === '/onboarding') {
       return res
@@ -44,19 +54,14 @@ export async function middleware(request: NextRequest) {
     return res
   } catch (error) {
     console.error('Middleware error:', error)
-    return NextResponse.redirect(new URL('/', request.url))
+    // On error, allow the request to continue to avoid white pages
+    return NextResponse.next()
   }
 }
 
+// Configure matcher to exclude static files
 export const config = {
   matcher: [
-    /*
-     * Match all paths except:
-     * 1. /api (API routes)
-     * 2. /_next (Next.js internals)
-     * 3. /static (static files)
-     * 4. /favicon.ico, /sitemap.xml (public files)
-     */
-    '/((?!api|_next|static|favicon.ico|sitemap.xml).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.).*)',
   ],
 } 
