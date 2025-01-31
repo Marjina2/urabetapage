@@ -14,6 +14,10 @@ const nextConfig = {
       fs: false,
     };
     return config;
+  },
+  // Explicitly disable app directory
+  experimental: {
+    appDir: false
   }
 }
 

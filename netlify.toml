@@ -1,5 +1,5 @@
 [build]
-  command = "npm ci && npm install --save-dev typescript @types/react @types/node && npx tailwindcss init -p && npm run build"
+  command = "npm ci && npm run build"
   publish = ".next"
   ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF . ':!dashboard' ':!onboarding'"
 

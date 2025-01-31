@@ -551,15 +551,15 @@ const Onboarding: FC = () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
         router.push('/')
-        return
-      }
-
+      return
+    }
+  
       const { data: profile } = await supabase
         .from('profiles')
         .select('onboarding_completed')
         .eq('id', session.user.id)
         .single()
-
+      
       if (profile?.onboarding_completed) {
         router.push('/dashboard')
       }
@@ -592,7 +592,7 @@ const Onboarding: FC = () => {
               </p>
               
               {/* Add your onboarding form/steps here */}
-            </div>
+          </div>
           </div>
         </div>
       </div>
