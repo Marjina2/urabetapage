@@ -1,5 +1,5 @@
 [build]
-  command = "NEXT_PUBLIC_SITE_URL=$URL npm ci && npm install buffer process webpack fs-extra && npm run build"
+  command = "NEXT_PUBLIC_SITE_URL=$URL NODE_ENV=production npm ci && npm install buffer process webpack fs-extra && npm run build && cp public/_redirects out/_redirects"
   publish = "out"
   ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- ':(exclude)dashboard' ':(exclude)onboarding'"
 

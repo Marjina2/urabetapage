@@ -28,6 +28,18 @@ async function copyFiles() {
       });
     }
 
+    // Ensure index.html exists
+    const indexHtml = path.join(outDir, 'index.html');
+    if (!fs.existsSync(indexHtml)) {
+      await fs.copy(path.join(outDir, '404.html'), indexHtml);
+    }
+
+    // Copy _redirects if it exists
+    const redirectsFile = path.join(publicDir, '_redirects');
+    if (fs.existsSync(redirectsFile)) {
+      await fs.copy(redirectsFile, path.join(outDir, '_redirects'));
+    }
+
     // Ensure favicon exists
     const faviconSource = path.join(process.cwd(), 'public', 'favicon.ico');
     const faviconDest = path.join(outDir, 'favicon.ico');
