@@ -1,5 +1,5 @@
 [build]
-  command = "npm ci && npm install buffer process webpack fs-extra && npm run build"
+  command = "NEXT_PUBLIC_SITE_URL=$URL npm ci && npm install buffer process webpack fs-extra && npm run build"
   publish = "out"
   ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- ':(exclude)dashboard' ':(exclude)onboarding'"
 
@@ -10,7 +10,6 @@
   NEXT_PUBLIC_SUPABASE_URL = "https://mhknphytydmucodqtprd.supabase.co"
   NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1oa25waHl0eWRtdWNvZHF0cHJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYyNzY4MzUsImV4cCI6MjA1MTg1MjgzNX0.gXDycogT9_teh7BRL1LX_7i_M8GPbtPjpT6qxSaj-Q8"
   SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1oa25waHl0eWRtdWNvZHF0cHJkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNjI3NjgzNSwiZXhwIjoyMDUxODUyODM1fQ.NFJSf86u3u6ph5EsStwkmU939FIzIhoBG_g2q6QdkFU"
-  NEXT_PUBLIC_SITE_URL = "${URL}"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
@@ -19,6 +18,7 @@
   from = "/*"
   to = "/index.html"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/_next/*"

@@ -31,6 +31,14 @@ async function cleanBuild() {
     console.log('Copying files...');
     execSync('npm run copy-files', { stdio: 'inherit' });
 
+    // Copy environment files
+    if (fs.existsSync('.env.production')) {
+      await fs.copy('.env.production', 'out/.env.production');
+    }
+    if (fs.existsSync('.env.local')) {
+      await fs.copy('.env.local', 'out/.env.local');
+    }
+
     console.log('Build completed successfully!');
   } catch (error) {
     console.error('Build failed:', error);
