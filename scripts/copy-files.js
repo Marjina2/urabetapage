@@ -34,39 +34,9 @@ async function copyFiles() {
       await fs.copy(path.join(outDir, '404.html'), indexHtml);
     }
 
-    // Copy _redirects if it exists
-    const redirectsFile = path.join(publicDir, '_redirects');
-    if (fs.existsSync(redirectsFile)) {
-      await fs.copy(redirectsFile, path.join(outDir, '_redirects'));
-    }
-
-    // Ensure favicon exists
-    const faviconSource = path.join(process.cwd(), 'public', 'favicon.ico');
-    const faviconDest = path.join(outDir, 'favicon.ico');
-    
-    if (fs.existsSync(faviconSource)) {
-      await fs.copy(faviconSource, faviconDest, {
-        overwrite: true,
-        errorOnExist: false
-      });
-    }
-
-    // Copy Netlify files
-    const netlifyToml = path.join(process.cwd(), 'netlify.toml');
-    const netlifyFunctions = path.join(process.cwd(), 'netlify', 'functions');
-
-    if (fs.existsSync(netlifyToml)) {
-      await fs.copy(netlifyToml, path.join(outDir, 'netlify.toml'), {
-        overwrite: true,
-        errorOnExist: false
-      });
-    }
-
-    if (fs.existsSync(netlifyFunctions)) {
-      await fs.copy(netlifyFunctions, path.join(outDir, 'netlify', 'functions'), {
-        overwrite: true,
-        errorOnExist: false
-      });
+    // Copy environment files
+    if (fs.existsSync('.env.production')) {
+      await fs.copy('.env.production', path.join(outDir, '.env.production'));
     }
 
     console.log('Files copied successfully');

@@ -19,25 +19,13 @@ async function cleanBuild() {
     console.log('Creating favicon...');
     execSync('npm run create-favicon', { stdio: 'inherit' });
 
-    // Run next build and export
+    // Run next build
     console.log('Building Next.js app...');
     execSync('next build', { stdio: 'inherit' });
-
-    // Create .nojekyll file
-    console.log('Creating .nojekyll file...');
-    execSync('npm run create-nojekyll', { stdio: 'inherit' });
 
     // Copy files
     console.log('Copying files...');
     execSync('npm run copy-files', { stdio: 'inherit' });
-
-    // Copy environment files
-    if (fs.existsSync('.env.production')) {
-      await fs.copy('.env.production', 'out/.env.production');
-    }
-    if (fs.existsSync('.env.local')) {
-      await fs.copy('.env.local', 'out/.env.local');
-    }
 
     console.log('Build completed successfully!');
   } catch (error) {

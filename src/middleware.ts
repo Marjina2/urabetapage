@@ -7,12 +7,11 @@ export async function middleware(request: NextRequest) {
   if (
     request.nextUrl.pathname.startsWith('/_next') ||
     request.nextUrl.pathname.startsWith('/api') ||
-    request.nextUrl.pathname.startsWith('/.netlify') ||
     request.nextUrl.pathname.startsWith('/static') ||
     request.nextUrl.pathname.includes('.') ||
     request.nextUrl.pathname === '/' ||
     request.nextUrl.pathname === '/index.html' ||
-    request.nextUrl.pathname.startsWith('/join/') // Skip middleware for join routes
+    request.nextUrl.pathname.startsWith('/join/')
   ) {
     return NextResponse.next()
   }
@@ -47,6 +46,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|images|static|api|.netlify|join).*)'
+    '/((?!_next/static|_next/image|favicon.ico|images|static|api|join).*)'
   ]
 } 
