@@ -2,16 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  experimental: {
-    forceSwcTransforms: true,
-  },
   output: 'export',
   images: {
     unoptimized: true,
   },
   trailingSlash: false,
   webpack: (config) => {
-    // Properly configure fallback with empty object
     config.resolve.fallback = {
       fs: false,
       net: false,
@@ -25,7 +21,6 @@ const nextConfig = {
       os: false,
       util: false
     }
-
     return config
   },
 }

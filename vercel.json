@@ -1,0 +1,44 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "out",
+  "routes": [
+    {
+      "src": "^/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "^/join/default",
+      "dest": "/join/default.html"
+    },
+    {
+      "src": "^/join/signup",
+      "dest": "/join/signup.html"
+    },
+    {
+      "src": "^/join/.*",
+      "status": 404,
+      "dest": "/404.html"
+    },
+    {
+      "src": "^/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "^/_next/(.*)",
+      "dest": "/_next/$1"
+    },
+    {
+      "src": "^/images/(.*)",
+      "dest": "/images/$1"
+    },
+    {
+      "src": "^/(dashboard|settings|onboarding)/(.*)",
+      "dest": "/$1.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+} 
