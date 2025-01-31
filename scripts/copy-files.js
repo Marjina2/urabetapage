@@ -3,18 +3,36 @@ const path = require('path');
 
 async function copyFiles() {
   try {
-    // Ensure out directory exists
-    await fs.ensureDir('out');
+    const outDir = path.join(process.cwd(), 'out');
+    const nextDir = path.join(process.cwd(), '.next');
 
-    // Copy Netlify configuration and functions
-    await fs.copy('netlify.toml', 'out/netlify.toml');
-    if (fs.existsSync('netlify/functions')) {
-      await fs.copy('netlify/functions', 'out/netlify/functions');
+    // Ensure directories exist
+    await fs.ensureDir(outDir);
+    await fs.ensureDir(nextDir);
+
+    // Copy Next.js build output
+    if (fs.existsSync(nextDir)) {
+      await fs.copy(nextDir, outDir);
     }
 
-    // Copy public files if they exist
-    if (fs.existsSync('public')) {
-      await fs.copy('public', 'out');
+    // Copy public directory if it exists
+    const publicDir = path.join(process.cwd(), 'public');
+    if (fs.existsSync(publicDir)) {
+      await fs.copy(publicDir, outDir, {
+        overwrite: true
+      });
+    }
+
+    // Copy Netlify files
+    const netlifyToml = path.join(process.cwd(), 'netlify.toml');
+    const netlifyFunctions = path.join(process.cwd(), 'netlify', 'functions');
+
+    if (fs.existsSync(netlifyToml)) {
+      await fs.copy(netlifyToml, path.join(outDir, 'netlify.toml'));
+    }
+
+    if (fs.existsSync(netlifyFunctions)) {
+      await fs.copy(netlifyFunctions, path.join(outDir, 'netlify', 'functions'));
     }
 
     console.log('Files copied successfully');
