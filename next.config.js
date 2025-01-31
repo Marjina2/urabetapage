@@ -15,6 +15,9 @@ const nextConfig = {
     };
     return config;
   },
+  experimental: {
+    forceSwcTransforms: false
+  }
 }
 
 module.exports = nextConfig 

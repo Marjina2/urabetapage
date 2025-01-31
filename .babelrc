@@ -1,4 +1,14 @@
 {
-  "presets": ["next/babel"],
-  "plugins": []
+  "presets": [
+    "next/babel"
+  ],
+  "plugins": [
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "corejs": 3,
+        "regenerator": true
+      }
+    ]
+  ]
 } 
