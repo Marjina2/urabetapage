@@ -3,13 +3,16 @@ import type { NextRequest } from 'next/server'
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 
 export async function middleware(request: NextRequest) {
-  // Skip middleware for static files and API routes
+  // Skip middleware for static files and special routes
   if (
     request.nextUrl.pathname.startsWith('/_next') ||
     request.nextUrl.pathname.startsWith('/api') ||
     request.nextUrl.pathname.startsWith('/.netlify') ||
+    request.nextUrl.pathname.startsWith('/static') ||
     request.nextUrl.pathname.includes('.') ||
-    request.nextUrl.pathname === '/'
+    request.nextUrl.pathname === '/' ||
+    request.nextUrl.pathname === '/index.html' ||
+    request.nextUrl.pathname.startsWith('/join/') // Skip middleware for join routes
   ) {
     return NextResponse.next()
   }
@@ -20,7 +23,7 @@ export async function middleware(request: NextRequest) {
     const { data: { session } } = await supabase.auth.getSession()
 
     // Public paths that don't require authentication
-    const publicPaths = ['/', '/auth/callback', '/login', '/register', '/terms', '/privacy']
+    const publicPaths = ['/auth/callback', '/login', '/register', '/terms', '/privacy']
     const isPublicPath = publicPaths.includes(request.nextUrl.pathname)
 
     if (isPublicPath) {
@@ -32,8 +35,7 @@ export async function middleware(request: NextRequest) {
     const isProtectedPath = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
 
     if (!session && isProtectedPath) {
-      const redirectUrl = new URL('/', request.url)
-      return NextResponse.redirect(redirectUrl)
+      return NextResponse.redirect(new URL('/', request.url))
     }
 
     return res
@@ -45,6 +47,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|images/|api/|.netlify/).*)'
+    '/((?!_next/static|_next/image|favicon.ico|images|static|api|.netlify|join).*)'
   ]
 } 

@@ -7,5 +7,15 @@
 /static/*  /static/:splat  200
 /images/*  /images/:splat  200
 
+# Handle dynamic routes without reload loops
+/dashboard/*  /dashboard/index.html  200
+/settings/*   /settings/index.html   200
+/onboarding/* /onboarding/index.html 200
+
+# Handle join routes
+/join/default  /join/default/index.html  200
+/join/signup   /join/signup/index.html   200
+/join/*        /404.html                 404
+
 # SPA fallback - must be last
-/*  /index.html  200 
+/*  /index.html  200! 
