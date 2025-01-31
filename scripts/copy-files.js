@@ -3,6 +3,9 @@ const path = require('path');
 
 async function copyFiles() {
   try {
+    // Log environment for debugging
+    console.log('Environment:', process.env.NODE_ENV);
+
     // Ensure out directory exists
     await fs.ensureDir('out');
 
@@ -18,6 +21,13 @@ async function copyFiles() {
     await fs.copy('netlify.toml', 'out/netlify.toml');
     if (fs.existsSync('netlify/functions')) {
       await fs.copy('netlify/functions', 'out/netlify/functions');
+    }
+
+    // Copy environment-specific files
+    if (process.env.NODE_ENV === 'production') {
+      if (fs.existsSync('.env.production')) {
+        await fs.copy('.env.production', 'out/.env.production');
+      }
     }
 
     console.log('Files copied successfully');

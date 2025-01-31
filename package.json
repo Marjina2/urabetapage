@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "dev3001": "next dev -p 3001",
-    "build": "next build && cross-env NODE_ENV=production npm run copy-files",
+    "build": "next build && npm run copy-files-prod",
+    "copy-files-prod": "cross-env NODE_ENV=production node scripts/copy-files.js",
     "generate-noise": "node scripts/generateNoise.js",
     "create-nojekyll": "node -e \"require('fs').writeFileSync('out/.nojekyll', '')\"",
     "copy-netlify-win": "node scripts/copy-netlify.js",
@@ -51,10 +52,10 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/lodash": "^4.17.14",
     "@types/next": "^8.0.7",
-    "@netlify/functions": "^3.0.0"
+    "@netlify/functions": "^3.0.0",
+    "cross-env": "^7.0.3"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
     "fs-extra": "^11.3.0",
     "next-sitemap": "^4.2.3",
     "rimraf": "^5.0.5",
