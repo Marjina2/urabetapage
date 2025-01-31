@@ -4,10 +4,15 @@ import cookie from 'cookie';
 
 export const handler: Handler = async (event, context) => {
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    // Add error checking for environment variables
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error('Missing Supabase environment variables');
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
     // Handle the OAuth callback
     const { code } = event.queryStringParameters || {};
@@ -23,7 +28,7 @@ export const handler: Handler = async (event, context) => {
     if (error) throw error;
 
     // Get the site URL from environment
-    const siteUrl = process.env.URL || process.env.NEXT_PUBLIC_SITE_URL;
+    const siteUrl = process.env.URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
     // Set the cookie using the cookie library
     const cookieString = cookie.serialize('sb-access-token', data.session.access_token, {
