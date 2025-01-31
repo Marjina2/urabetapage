@@ -4,16 +4,15 @@ const webpack = require('webpack');
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
+  output: 'export',
   images: {
     unoptimized: true,
   },
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/' : '',
+  trailingSlash: true,
+  // Remove assetPrefix
   webpack: (config, { isServer }) => {
-    // Fixes npm packages that depend on `buffer` module
     if (!isServer) {
       config.resolve.fallback = {
-        ...config.resolve.fallback,
         fs: false,
         net: false,
         tls: false,
@@ -27,19 +26,11 @@ const nextConfig = {
         new webpack.ProvidePlugin({
           Buffer: ['buffer', 'Buffer'],
           process: 'process/browser',
-        }),
-        // Add environment variables explicitly
-        new webpack.DefinePlugin({
-          'process.env.NEXT_PUBLIC_SUPABASE_URL': JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL),
-          'process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY': JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
-          'process.env.NEXT_PUBLIC_SITE_URL': JSON.stringify(process.env.NEXT_PUBLIC_SITE_URL || process.env.URL || 'http://localhost:3000'),
         })
       );
     }
     return config;
   },
-  // Add trailingSlash for static export
-  trailingSlash: true,
 }
 
 module.exports = nextConfig 

@@ -14,34 +14,11 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+# Simplify redirects
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  force = true
-
-[[redirects]]
-  from = "/_next/*"
-  to = "/_next/:splat"
-  status = 200
-
-# Add SPA fallback
-[[redirects]]
-  from = "/*"
-  to = "/404.html"
-  status = 404
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/auth/callback"
-  to = "/.netlify/functions/auth-callback"
-  status = 200
-  force = true
 
 [[headers]]
   for = "/*"
