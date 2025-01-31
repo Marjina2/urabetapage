@@ -6,6 +6,25 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-hot-toast'
 import { supabase } from '@/lib/supabaseClient'
 
+type BetaRegistration = {
+  full_name: string;
+  email: string;
+}
+
+type ReferralData = {
+  referrer_email: string;
+  beta_registrations: {
+    full_name: string;
+  };
+}
+
+type LeaderboardItem = {
+  full_name: string;
+  email: string;
+  referral_count: number;
+  rank: number;
+}
+
 const BetaRegistrations: FC = () => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -21,11 +40,7 @@ const BetaRegistrations: FC = () => {
   const [referrerEmail, setReferrerEmail] = useState<string | null>(null)
   const [referralStats, setReferralStats] = useState({ total: 0, completed: 0 })
   const [showLeaderboard, setShowLeaderboard] = useState(false)
-  const [leaderboardData, setLeaderboardData] = useState<Array<{
-    full_name: string;
-    referral_count: number;
-    rank: number;
-  }>>([])
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardItem[]>([])
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 
   const heardFromOptions = [
@@ -60,60 +75,42 @@ const BetaRegistrations: FC = () => {
     setTimer(newTimer);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async () => {
     setIsLoading(true)
 
     try {
-      // Validate all fields before submission
-      if (!formData.fullName || !formData.country || !formData.heardFrom || 
-          !formData.organization || !formData.email) {
-        throw new Error('Please fill in all fields')
-      }
-
-      // First check if email already exists
-      const { data: existingUser, error: checkError } = await supabase
-        .from('beta_registrations')
-        .select('email')
-        .eq('email', formData.email)
-        .single()
-
-      if (checkError && checkError.code !== 'PGRST116') {
-        throw checkError
-      }
-
-      if (existingUser) {
-        setCurrentField(5)
-        setIsLoading(false)
-        startCountdown()
-        toast.success('Welcome back! Check out the referral leaderboard.')
-        return
-      }
-
-      // Insert new registration if user doesn't exist
-      const { error: insertError } = await supabase
+      const { error } = await supabase
         .from('beta_registrations')
         .insert([{
-          full_name: formData.fullName.trim(),
-          country: formData.country.trim(),
+          full_name: formData.fullName,
+          country: formData.country,
           heard_from: formData.heardFrom,
           organization: formData.organization,
-          email: formData.email.trim().toLowerCase(),
+          email: formData.email,
           status: 'pending',
           registered_at: new Date().toISOString()
         }])
 
-      if (insertError) throw insertError
+      if (error) throw error
 
       // Success animation
       setCurrentField(5)
       
       // Start countdown
-      startCountdown()
+      let timeLeft = 60;
+      const timer = setInterval(() => {
+        timeLeft -= 1;
+        setCountdown(timeLeft);
+        
+        if (timeLeft === 0) {
+          clearInterval(timer);
+          router.push('/');
+        }
+      }, 1000);
 
-    } catch (error: any) {
-      console.error('Error submitting registration:', error)
-      toast.error(error.message || 'Failed to submit registration. Please try again.')
+    } catch (error) {
+      console.error('Error submitting beta registration:', error)
+      toast.error('Failed to submit registration. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -322,12 +319,11 @@ const BetaRegistrations: FC = () => {
 
   const fetchLeaderboard = async () => {
     try {
-      // First get all referrals
       const { data: referralData, error: referralError } = await supabase
         .from('referrals')
         .select(`
           referrer_email,
-          beta_registrations!referrals_referrer_email_fkey (
+          beta_registrations:beta_registrations!referrals_referrer_email_fkey (
             full_name
           )
         `)
@@ -336,7 +332,7 @@ const BetaRegistrations: FC = () => {
       if (referralError) throw referralError
 
       // Count referrals for each referrer
-      const referralCounts = referralData?.reduce((acc: { [key: string]: any }, curr) => {
+      const referralCounts = (referralData || []).reduce((acc: { [key: string]: any }, curr: any) => {
         const email = curr.referrer_email
         if (!acc[email]) {
           acc[email] = {
@@ -349,11 +345,12 @@ const BetaRegistrations: FC = () => {
       }, {})
 
       // Convert to array and sort
-      const formattedData = Object.entries(referralCounts || {})
+      const formattedData = Object.entries(referralCounts)
         .map(([email, data]: [string, any]) => ({
           full_name: data.full_name,
           referral_count: data.count,
-          email
+          email,
+          rank: 0 // Will be set in next map
         }))
         .sort((a, b) => b.referral_count - a.referral_count)
         .map((item, index) => ({
@@ -422,7 +419,7 @@ const BetaRegistrations: FC = () => {
               onSubmit={(e) => {
                 e.preventDefault()
                 if (currentField === formFields.length - 1) {
-                  handleSubmit(e)
+                  handleSubmit()
                 }
               }} 
               className="space-y-6"
@@ -475,7 +472,7 @@ const BetaRegistrations: FC = () => {
                           if (!isCurrentFieldValid()) return
                           
                           if (currentField === formFields.length - 1) {
-                            handleSubmit(new Event('submit'))
+                            handleSubmit()
                           } else {
                             setCurrentField(currentField + 1)
                           }

@@ -20,6 +20,8 @@ const DashboardPage: FC = () => {
   const [hasConfiguredApis, setHasConfiguredApis] = useState(false)
   const [showApiPrompt, setShowApiPrompt] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isPanelOpen, setIsPanelOpen] = useState(false)
+  const [highlightedText, setHighlightedText] = useState('')
 
   // Animation variants
   const containerVariants = {
@@ -88,7 +90,7 @@ const DashboardPage: FC = () => {
     }
   }
 
-  const handleTextHighlight = () => {
+  const handleTextSelection = () => {
     const selection = window.getSelection()?.toString();
     if (selection) {
       setHighlightedText(selection);
@@ -158,6 +160,7 @@ const DashboardPage: FC = () => {
     <>
       <Head>
         <title>Dashboard | URA</title>
+        <meta name="description" content="URA Dashboard - Manage your research" />
       </Head>
 
       <div className="min-h-screen bg-gradient-to-b from-black to-[#1C1C1E] text-white relative">
@@ -308,6 +311,20 @@ const DashboardPage: FC = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {isPanelOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-8 p-6 bg-purple-500/10 rounded-xl border border-purple-500/20"
+              >
+                <h3 className="text-xl font-semibold mb-4">Analysis</h3>
+                <p className="text-gray-400">
+                  Selected text: "{highlightedText}"
+                </p>
+                {/* Add your analysis components here */}
+              </motion.div>
+            )}
           </motion.div>
         </div>
 
