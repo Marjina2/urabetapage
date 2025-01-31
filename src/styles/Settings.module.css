@@ -1,0 +1,450 @@
+.container {
+  min-height: 100vh;
+  background-color: var(--black);
+  color: var(--white);
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5rem;
+  background: rgba(28, 28, 30, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(188, 19, 254, 0.1);
+  z-index: 50;
+}
+
+.headerContent {
+  max-width: 1400px;
+  width: 95%;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.backButton {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: var(--light-gray);
+  background: rgba(188, 19, 254, 0.1);
+  border: 1px solid rgba(188, 19, 254, 0.2);
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  background: rgba(188, 19, 254, 0.2);
+  border-color: var(--neon-purple);
+  color: var(--white);
+  transform: translateX(-2px);
+}
+
+.header h1 {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.main {
+  max-width: 1400px;
+  width: 95%;
+  margin: 0 auto;
+  padding-top: 5rem;
+}
+
+.settingsContainer {
+  background: rgba(28, 28, 30, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid rgba(188, 19, 254, 0.1);
+}
+
+.settingsHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.settingsHeader i {
+  font-size: 2rem;
+  color: var(--neon-purple);
+  margin-bottom: 0.5rem;
+}
+
+.settingsHeader h2 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.settingsHeader p {
+  color: var(--light-gray);
+  font-size: 0.875rem;
+}
+
+.apiKeysList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.apiKeyItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  background: rgba(44, 44, 46, 0.6);
+  border: 1px solid rgba(188, 19, 254, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.apiKeyItem:hover {
+  background: rgba(44, 44, 46, 0.8);
+  border-color: rgba(188, 19, 254, 0.2);
+}
+
+.apiKeyInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.apiKeyInfo i {
+  font-size: 1.25rem;
+  color: var(--neon-purple);
+}
+
+.apiKeyInfo h3 {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin-bottom: 0.25rem;
+}
+
+.apiKeyInfo p {
+  font-family: var(--font-main);
+  font-size: 0.8125rem;
+  color: var(--light-gray);
+  letter-spacing: 0.2px;
+}
+
+.apiKeyActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputWrapper input {
+  width: 300px;
+  height: 2.5rem;
+  padding: 0 2.5rem 0 1rem;
+  background: rgba(28, 28, 30, 0.95);
+  border: 1px solid rgba(188, 19, 254, 0.2);
+  border-radius: 8px;
+  color: var(--white);
+  font-size: 0.875rem;
+  font-family: var(--font-main);
+  transition: all 0.3s ease;
+}
+
+.inputWrapper input:focus {
+  outline: none;
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
+}
+
+.deleteButton {
+  position: absolute;
+  right: 0.5rem;
+  color: var(--light-gray);
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.deleteButton:hover {
+  color: var(--white);
+  background: rgba(188, 19, 254, 0.1);
+}
+
+.changeButton {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background: rgba(188, 19, 254, 0.1);
+  border: 1px solid rgba(188, 19, 254, 0.2);
+  color: var(--light-gray);
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.changeButton:hover {
+  background: rgba(188, 19, 254, 0.2);
+  border-color: var(--neon-purple);
+  color: var(--white);
+}
+
+.message {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.message.success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.message.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.saveButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  background: var(--neon-purple);
+  color: var(--white);
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: var(--violet-glow);
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(188, 19, 254, 0.3);
+}
+
+.saveButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .apiKeyItem {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .apiKeyActions {
+    width: 100%;
+  }
+
+  .inputWrapper input {
+    width: 100%;
+  }
+}
+
+.settingSection {
+  padding: 2rem;
+  background: rgba(28, 28, 30, 0.6);
+  border: 1px solid rgba(188, 19, 254, 0.1);
+  border-radius: 16px;
+  margin-bottom: 2rem;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.sectionHeader h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  background: linear-gradient(45deg, var(--white), var(--violet-glow));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.apiStatus {
+  font-size: 0.875rem;
+}
+
+.apiStatus .active {
+  color: #4CAF50;
+}
+
+.apiStatus .inactive {
+  color: #FFC107;
+}
+
+.settingField {
+  margin-bottom: 2rem;
+}
+
+.settingField label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--light-gray);
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.inputWrapper input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  padding-right: 3rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(188, 19, 254, 0.2);
+  border-radius: 12px;
+  color: var(--white);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.inputWrapper input:focus {
+  outline: none;
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 20px rgba(188, 19, 254, 0.2);
+}
+
+.inputWrapper i {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--neon-purple);
+}
+
+.documentation {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.documentation h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--white);
+}
+
+.docSection {
+  margin-bottom: 1.5rem;
+}
+
+.docSection h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--violet-glow);
+}
+
+.docSection ul,
+.docSection ol {
+  padding-left: 1.5rem;
+  color: var(--light-gray);
+}
+
+.docSection li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.docLinks {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.docLinks a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(188, 19, 254, 0.1);
+  border: 1px solid rgba(188, 19, 254, 0.2);
+  border-radius: 8px;
+  color: var(--white);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.docLinks a:hover {
+  background: rgba(188, 19, 254, 0.2);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .settingSection {
+    padding: 1.5rem;
+  }
+
+  .docLinks {
+    flex-direction: column;
+  }
+}
+
+.settingSection + .settingSection {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(188, 19, 254, 0.1);
+}
+
+.modalBody {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  padding: 2rem;
+  padding-right: 1.5rem;
+}
+
+.modalBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modalBody::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+  background: rgba(188, 19, 254, 0.2);
+  border-radius: 4px;
+}
+
+.modalBody::-webkit-scrollbar-thumb:hover {
+  background: rgba(188, 19, 254, 0.3);
+} 

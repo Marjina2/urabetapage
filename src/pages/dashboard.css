@@ -1,0 +1,155 @@
+/* Dashboard.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #000;
+    color: #fff;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.dashboard {
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+}
+
+.search-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 25px;
+    outline: none;
+    background: #252544;
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.search-bar input:focus {
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.8);
+}
+
+.search-bar button {
+    position: absolute;
+    right: 10px;
+    padding: 10px 20px;
+    border: none;
+    background: #8a2be2;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-bar button:hover {
+    background: #b86ef9;
+    box-shadow: 0 4px 10px rgba(138, 43, 226, 0.5);
+}
+
+.grid-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+    opacity: 0.1;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+    color: #c3b6f5;
+}
+
+p {
+    font-size: 1rem;
+    color: #c7c7d1;
+}
+
+.bg-grid-pattern {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.bg-gradient-radial {
+    background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1), transparent 60%);
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Hover effects */
+.hover-glow:hover {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+/* Input focus effects */
+input:focus {
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1C1C1E;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4B5563;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6B7280;
+}
+
+/* Results section */
+.results-section {
+    background: #252544;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.results-section:hover {
+    border-color: rgba(139, 92, 246, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Add your dashboard styles here */

@@ -1,0 +1,215 @@
+:root {
+    --black: #000000;
+    --dark-gray: #1C1C1E;
+    --deep-purple: #6A0DAD;
+    --violet-glow: #8A2BE2;
+    --lavender: #C084FC;
+    --white: #FFFFFF;
+    --light-gray: #D1D1D1;
+    --neon-purple: #9400D3;
+    --soft-pink-purple: #D8BFD8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: var(--black);
+    color: var(--white);
+    line-height: 1.6;
+}
+
+/* Navigation */
+nav {
+    background-color: var(--dark-gray);
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    color: var(--violet-glow);
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px var(--neon-purple);
+}
+
+.nav-links a {
+    color: var(--light-gray);
+    text-decoration: none;
+    margin-left: 2rem;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--lavender);
+}
+
+/* Hero Section */
+header {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                url('https://source.unsplash.com/random/1920x1080/?cyberpunk');
+    background-size: cover;
+    background-position: center;
+}
+
+.hero {
+    padding: 2rem;
+}
+
+h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    color: var(--white);
+    text-shadow: 0 0 20px var(--violet-glow);
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: var(--light-gray);
+    margin-bottom: 2rem;
+}
+
+.cta-button {
+    background-color: var(--violet-glow);
+    color: var(--white);
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: var(--deep-purple);
+    box-shadow: 0 0 20px var(--neon-purple);
+}
+
+/* Features Section */
+.features {
+    padding: 5rem 10%;
+    background-color: var(--dark-gray);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--white);
+    font-size: 2.5rem;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background-color: var(--black);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+}
+
+.feature-card i {
+    font-size: 2.5rem;
+    color: var(--violet-glow);
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    color: var(--white);
+    margin-bottom: 1rem;
+}
+
+.feature-card p {
+    color: var(--light-gray);
+}
+
+/* Contact Section */
+.contact {
+    padding: 5rem 10%;
+    text-align: center;
+}
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+input[type="email"] {
+    width: 70%;
+    padding: 1rem;
+    margin-right: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--dark-gray);
+    color: var(--white);
+}
+
+form button {
+    background-color: var(--violet-glow);
+    color: var(--white);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+form button:hover {
+    background-color: var(--deep-purple);
+    box-shadow: 0 0 10px var(--neon-purple);
+}
+
+/* Footer */
+footer {
+    background-color: var(--dark-gray);
+    color: var(--light-gray);
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    input[type="email"] {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    form button {
+        width: 100%;
+    }
+} 
