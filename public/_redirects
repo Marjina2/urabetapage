@@ -1,5 +1,11 @@
-/* /index.html 200
-/api/* /.netlify/functions/:splat 200
-/auth/callback /.netlify/functions/auth-callback
-/_next/* /_next/:splat 200
-/images/*    /images/:splat    200 
+# API routes
+/api/*  /.netlify/functions/:splat  200
+/auth/callback  /.netlify/functions/auth-callback  200
+
+# Next.js static files
+/_next/*  /_next/:splat  200
+/static/*  /static/:splat  200
+/images/*  /images/:splat  200
+
+# SPA fallback - must be last
+/*  /index.html  200 

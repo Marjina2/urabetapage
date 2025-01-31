@@ -3,32 +3,37 @@ import type { NextRequest } from 'next/server'
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 
 export async function middleware(request: NextRequest) {
-  try {
-    // Skip middleware for static files and API routes
-    if (
-      request.nextUrl.pathname.includes('.') ||
-      request.nextUrl.pathname.startsWith('/_next/') ||
-      request.nextUrl.pathname.startsWith('/api/') ||
-      request.nextUrl.pathname.startsWith('/.netlify/')
-    ) {
-      return NextResponse.next()
-    }
+  // Skip middleware for static files and API routes
+  if (
+    request.nextUrl.pathname.startsWith('/_next') ||
+    request.nextUrl.pathname.startsWith('/api') ||
+    request.nextUrl.pathname.startsWith('/.netlify') ||
+    request.nextUrl.pathname.includes('.') ||
+    request.nextUrl.pathname === '/'
+  ) {
+    return NextResponse.next()
+  }
 
+  try {
     const res = NextResponse.next()
     const supabase = createMiddlewareClient({ req: request, res })
     const { data: { session } } = await supabase.auth.getSession()
 
     // Public paths that don't require authentication
     const publicPaths = ['/', '/auth/callback', '/login', '/register', '/terms', '/privacy']
-    if (publicPaths.includes(request.nextUrl.pathname)) {
+    const isPublicPath = publicPaths.includes(request.nextUrl.pathname)
+
+    if (isPublicPath) {
       return res
     }
 
-    // If no session, only allow public paths
-    if (!session) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/'
-      return NextResponse.redirect(url)
+    // Protected paths
+    const protectedPaths = ['/dashboard', '/settings', '/onboarding']
+    const isProtectedPath = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
+
+    if (!session && isProtectedPath) {
+      const redirectUrl = new URL('/', request.url)
+      return NextResponse.redirect(redirectUrl)
     }
 
     return res
@@ -40,6 +45,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|images/|api/|.netlify/).*)',
-  ],
+    '/((?!_next/static|_next/image|favicon.ico|images/|api/|.netlify/).*)'
+  ]
 } 
