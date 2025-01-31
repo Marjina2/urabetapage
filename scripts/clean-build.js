@@ -19,9 +19,13 @@ async function cleanBuild() {
     console.log('Creating favicon...');
     execSync('npm run create-favicon', { stdio: 'inherit' });
 
-    // Run next build
+    // Run next build and export
     console.log('Building Next.js app...');
     execSync('next build', { stdio: 'inherit' });
+
+    // Create .nojekyll file
+    console.log('Creating .nojekyll file...');
+    execSync('npm run create-nojekyll', { stdio: 'inherit' });
 
     // Copy files
     console.log('Copying files...');

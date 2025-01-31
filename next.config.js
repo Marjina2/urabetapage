@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
   images: {
     unoptimized: true,
   },
@@ -31,19 +32,8 @@ const nextConfig = {
     }
     return config;
   },
-  async headers() {
-    return [
-      {
-        source: '/favicon.ico',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-    ];
-  },
+  // Add trailingSlash for static export
+  trailingSlash: true,
   env: {
     NEXT_PUBLIC_SITE_URL: process.env.URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
