@@ -43,22 +43,17 @@ const JoinPage: FC<Props> = ({ email: initialEmail }) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // Pre-render these paths at build time
-  const paths = [
-    { params: { email: 'default' } },
-    { params: { email: 'signup' } }
-  ]
-
   return {
-    paths,
-    // Return 404 for non-existent paths
+    paths: [
+      { params: { email: 'default' } },
+      { params: { email: 'signup' } }
+    ],
     fallback: false
   }
 }
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const email = params?.email as string
-
   return {
     props: {
       email
