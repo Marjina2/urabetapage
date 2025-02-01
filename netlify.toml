@@ -1,0 +1,3 @@
+# Empty Netlify file (not needed for Vercel)
+[build]
+  publish = ".next" 
