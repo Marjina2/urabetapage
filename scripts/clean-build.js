@@ -17,7 +17,7 @@ async function cleanBuild() {
 
     // Create favicon
     console.log('Creating favicon...');
-    execSync('npm run create-favicon', { stdio: 'inherit' });
+    execSync('node scripts/create-favicon.js', { stdio: 'inherit' });
 
     // Run next build
     console.log('Building Next.js app...');
@@ -25,7 +25,11 @@ async function cleanBuild() {
 
     // Copy files
     console.log('Copying files...');
-    execSync('npm run copy-files', { stdio: 'inherit' });
+    execSync('node scripts/copy-files.js', { stdio: 'inherit' });
+
+    // Generate sitemap
+    console.log('Generating sitemap...');
+    execSync('next-sitemap', { stdio: 'inherit' });
 
     console.log('Build completed successfully!');
   } catch (error) {

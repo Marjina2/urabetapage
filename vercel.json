@@ -14,10 +14,6 @@
       "dest": "/_next/static/$1"
     },
     {
-      "src": "^/_next/(.*)",
-      "dest": "/_next/$1"
-    },
-    {
       "src": "^/images/(.*)",
       "dest": "/images/$1"
     },
@@ -26,22 +22,18 @@
       "dest": "/favicon.ico"
     },
     {
+      "src": "^/robots.txt",
+      "dest": "/robots.txt"
+    },
+    {
+      "src": "^/sitemap(.*).xml",
+      "dest": "/sitemap$1.xml"
+    },
+    {
       "handle": "filesystem"
     },
     {
-      "src": "^/join/(default|signup)/?$",
-      "dest": "/join/$1/index.html"
-    },
-    {
-      "src": "^/(dashboard|settings|onboarding|privacy|terms|contact)/?$",
-      "dest": "/$1/index.html"
-    },
-    {
-      "src": "^/404/?$",
-      "dest": "/404.html"
-    },
-    {
-      "src": "/((?!.*\\..*$).*)",
+      "src": "/(.*)",
       "dest": "/index.html"
     }
   ]
