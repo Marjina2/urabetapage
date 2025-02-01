@@ -3,48 +3,45 @@ const path = require('path');
 
 async function copyFiles() {
   try {
-    const outDir = path.join(process.cwd(), 'out');
+    const nextDir = path.join(process.cwd(), '.next');
     const publicDir = path.join(process.cwd(), 'public');
-    const distDir = path.join(process.cwd(), 'dist');
 
-    // Ensure directories exist
-    await fs.ensureDir(outDir);
+    // Ensure next directory exists
+    await fs.ensureDir(nextDir);
 
-    // Copy public directory
+    // Copy public directory if it exists
     if (fs.existsSync(publicDir)) {
-      await fs.copy(publicDir, outDir, {
+      await fs.copy(publicDir, nextDir, {
         overwrite: true,
         filter: (src) => {
           return !src.includes('node_modules') && 
-                 !src.startsWith(outDir);
+                 !src.startsWith(nextDir);
         }
       });
     }
 
-    // Copy dist files if they exist
-    if (fs.existsSync(distDir)) {
-      await fs.copy(distDir, outDir, { overwrite: true });
-    }
-
     // Create route directories and copy index.html
-    const indexHtml = path.join(outDir, 'index.html');
+    const indexHtml = path.join(nextDir, 'index.html');
     if (fs.existsSync(indexHtml)) {
       const routes = ['dashboard', 'settings', 'onboarding', 'privacy', 'terms', 'contact'];
       for (const route of routes) {
-        const routeDir = path.join(outDir, route);
+        const routeDir = path.join(nextDir, route);
         await fs.ensureDir(routeDir);
         await fs.copy(indexHtml, path.join(routeDir, 'index.html'));
       }
     }
 
-    // Create .nojekyll file for GitHub Pages (if needed)
-    await fs.writeFile(path.join(outDir, '.nojekyll'), '');
+    // Create .nojekyll file for GitHub Pages
+    await fs.writeFile(path.join(nextDir, '.nojekyll'), '');
 
     console.log('Files copied successfully');
   } catch (err) {
-    console.error('Error copying files:', err);
-    process.exit(0);
+    // Log error but don't exit to prevent build failure
+    console.warn('Warning during file copy:', err);
   }
 }
 
-copyFiles().catch(() => process.exit(0));
+copyFiles().catch(err => {
+  console.warn('Warning during file copy:', err);
+  // Don't exit with error to allow build to continue
+});

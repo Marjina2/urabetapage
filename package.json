@@ -5,10 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "dev3001": "next dev -p 3001",
-    "clean": "rimraf .next && rimraf out && rimraf node_modules/.cache",
+    "clean": "rimraf .next && rimraf node_modules/.cache",
     "prebuild": "npm run clean",
-    "build": "next build",
-    "postbuild": "next-sitemap && node scripts/copy-files.js",
+    "build": "next build && next-sitemap",
+    "postbuild": "node scripts/copy-files.js",
     "start": "next start -p 3000",
     "start3001": "next start -p 3001",
     "lint": "next lint",
