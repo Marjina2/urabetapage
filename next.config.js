@@ -8,8 +8,11 @@ const nextConfig = {
   },
   trailingSlash: true,
   experimental: {
-    optimizeCss: true,
-    forceSwcTransforms: true,
+    optimizeCss: false,
+  },
+  env: {
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   },
   webpack: (config) => {
     config.resolve.fallback = {
@@ -23,10 +26,11 @@ const nextConfig = {
       zlib: false,
       path: false,
       os: false,
-      util: false
+      util: false,
+      punycode: false
     }
     return config
-  },
+  }
 }
 
 module.exports = nextConfig 

@@ -4,12 +4,14 @@
   "outputDirectory": "out",
   "routes": [
     {
-      "src": "^/api/(.*)",
-      "dest": "/api/$1"
+      "src": "^/static/(.*)",
+      "headers": { "cache-control": "public, max-age=31536000, immutable" },
+      "dest": "/static/$1"
     },
     {
-      "src": "^/static/(.*)",
-      "dest": "/static/$1"
+      "src": "^/_next/static/(.*)",
+      "headers": { "cache-control": "public, max-age=31536000, immutable" },
+      "dest": "/_next/static/$1"
     },
     {
       "src": "^/_next/(.*)",
@@ -20,27 +22,26 @@
       "dest": "/images/$1"
     },
     {
-      "src": "^/join/default",
-      "dest": "/join/default.html"
-    },
-    {
-      "src": "^/join/signup",
-      "dest": "/join/signup.html"
-    },
-    {
-      "src": "^/join/.*",
-      "status": 404,
-      "dest": "/404.html"
-    },
-    {
-      "src": "^/(dashboard|settings|onboarding)/(.*)",
-      "dest": "/$1.html"
+      "src": "^/favicon.ico",
+      "dest": "/favicon.ico"
     },
     {
       "handle": "filesystem"
     },
     {
-      "src": "/(.*)",
+      "src": "^/join/(default|signup)/?$",
+      "dest": "/join/$1/index.html"
+    },
+    {
+      "src": "^/(dashboard|settings|onboarding|privacy|terms|contact)/?$",
+      "dest": "/$1/index.html"
+    },
+    {
+      "src": "^/404/?$",
+      "dest": "/404.html"
+    },
+    {
+      "src": "/((?!.*\\..*$).*)",
       "dest": "/index.html"
     }
   ]

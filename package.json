@@ -5,11 +5,13 @@
   "scripts": {
     "dev": "next dev",
     "dev3001": "next dev -p 3001",
-    "build": "next build",
-    "start": "npx serve@latest out -p 3000",
-    "start3001": "npx serve@latest out -p 3001",
-    "lint": "next lint",
     "clean": "rimraf .next && rimraf out && rimraf node_modules/.cache",
+    "prebuild": "npm run clean",
+    "build": "next build && next export -o out",
+    "postbuild": "node scripts/copy-files.js",
+    "start": "npx serve@latest out -s",
+    "start3001": "npx serve@latest out -s -p 3001",
+    "lint": "next lint",
     "rebuild": "npm run clean && npm install && npm run build"
   },
   "keywords": [],
