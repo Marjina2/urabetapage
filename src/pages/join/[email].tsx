@@ -1,16 +1,67 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Navigation from '@/components/Navigation'
 import { GetStaticProps, GetStaticPaths } from 'next'
+import { supabase } from '@/lib/supabaseClient'
+import toast from 'react-hot-toast'
 
 interface Props {
   email: string
 }
 
-const JoinPage: FC<Props> = ({ email: initialEmail }) => {
+const JoinWithReferral: FC<Props> = ({ email: initialEmail }) => {
   const router = useRouter()
   
+  useEffect(() => {
+    const handleReferral = async () => {
+      if (!initialEmail || initialEmail === 'default' || initialEmail === 'signup') {
+        router.replace('/betaregistrations')
+        return
+      }
+
+      const toastId = toast.loading('Verifying referral...')
+      const cleanEmail = initialEmail.toString().trim().toLowerCase()
+
+      try {
+        // Verify the referrer exists
+        const { data: referrer, error } = await supabase
+          .from('beta_registrations')
+          .select('email')
+          .eq('email', cleanEmail)
+          .single()
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error verifying referrer:', error)
+          toast.error('Invalid referral link', { id: toastId })
+          router.replace('/betaregistrations')
+          return
+        }
+
+        if (referrer) {
+          // Store referrer in localStorage and redirect with ref parameter
+          localStorage.setItem('referrer', cleanEmail)
+          toast.success('Referral verified!', { id: toastId })
+          
+          // Use the referrer's email as the ref parameter
+          const redirectUrl = `/betaregistrations?ref=${encodeURIComponent(cleanEmail)}`
+          router.replace(redirectUrl)
+        } else {
+          toast.error('Invalid referral link', { id: toastId })
+          router.replace('/betaregistrations')
+        }
+      } catch (error) {
+        console.error('Referral error:', error)
+        toast.error('Something went wrong', { id: toastId })
+        router.replace('/betaregistrations')
+      }
+    }
+
+    if (router.isReady && initialEmail) {
+      handleReferral()
+    }
+  }, [initialEmail, router])
+
   // Handle fallback state
   if (router.isFallback) {
     return (
@@ -20,22 +71,19 @@ const JoinPage: FC<Props> = ({ email: initialEmail }) => {
     )
   }
 
-  const { email = initialEmail } = router.query
-
   return (
     <>
       <Head>
-        <title>Join | URA</title>
-        <meta name="description" content="Join URA" />
+        <title>Verifying Referral | URA</title>
+        <meta name="description" content="Verifying referral link" />
       </Head>
 
       <div className="min-h-screen bg-black text-white">
         <Navigation />
-        <div className="flex flex-col items-center justify-center h-screen">
-          <h1 className="text-4xl font-bold mb-8">Welcome!</h1>
-          <p className="text-gray-400">
-            {email ? `Joining with email: ${email}` : 'Loading...'}
-          </p>
+        <div className="flex items-center justify-center h-screen">
+          <div className="text-purple-400 animate-pulse text-lg">
+            Verifying referral...
+          </div>
         </div>
       </div>
     </>
@@ -48,7 +96,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       { params: { email: 'default' } },
       { params: { email: 'signup' } }
     ],
-    fallback: false
+    fallback: true
   }
 }
 
@@ -61,4 +109,4 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   }
 }
 
-export default JoinPage 
+export default JoinWithReferral 

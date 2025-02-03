@@ -6,27 +6,39 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-hot-toast'
 import { supabase } from '@/lib/supabaseClient'
 
-type BetaRegistration = {
+interface BetaRegistration {
   full_name: string;
   email: string;
 }
 
-type ReferralData = {
+interface ReferralData {
   referrer_email: string;
-  beta_registrations: {
-    full_name: string;
-  };
+  beta_registrations: BetaRegistration;
 }
 
-type LeaderboardItem = {
+interface ReferralCount {
+  full_name: string;
+  email: string;
+  count: number;
+}
+
+interface LeaderboardItem {
+  rank: number;
   full_name: string;
   email: string;
   referral_count: number;
-  rank: number;
+}
+
+// Add this type for better error handling
+interface SupabaseError {
+  code: string;
+  message: string;
+  details?: any;
 }
 
 const BetaRegistrations: FC = () => {
   const router = useRouter()
+  const { ref } = router.query
   const [isLoading, setIsLoading] = useState(false)
   const [currentField, setCurrentField] = useState(0)
   const [formData, setFormData] = useState({
@@ -37,11 +49,12 @@ const BetaRegistrations: FC = () => {
     email: ''
   })
   const [countdown, setCountdown] = useState(60);
-  const [referrerEmail, setReferrerEmail] = useState<string | null>(null)
+  const [referrer, setReferrer] = useState<string | null>(null)
   const [referralStats, setReferralStats] = useState({ total: 0, completed: 0 })
   const [showLeaderboard, setShowLeaderboard] = useState(false)
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardItem[]>([])
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+  const [referralCount, setReferralCount] = useState(0)
 
   const heardFromOptions = [
     'Instagram',
@@ -52,11 +65,35 @@ const BetaRegistrations: FC = () => {
   ]
 
   useEffect(() => {
-    const { ref } = router.query
-    if (ref && typeof ref === 'string') {
-      setReferrerEmail(ref)
+    const loadReferrer = async () => {
+      const storedReferrer = localStorage.getItem('referrer')
+      const urlRef = router.query.ref
+
+      // Prioritize URL ref over stored ref
+      const referrerToUse = urlRef || storedReferrer
+
+      if (referrerToUse && typeof referrerToUse === 'string') {
+        // Verify referrer exists in database
+        const { data, error } = await supabase
+          .from('beta_registrations')
+          .select('email')
+          .eq('email', referrerToUse.toLowerCase())
+          .single()
+
+        if (!error && data) {
+          setReferrer(data.email)
+          // Update URL if needed
+          if (!urlRef) {
+            router.replace(`/betaregistrations?ref=${encodeURIComponent(data.email)}`, undefined, { shallow: true })
+          }
+        }
+      }
     }
-  }, [router.query])
+
+    if (router.isReady) {
+      loadReferrer()
+    }
+  }, [router.isReady, router.query.ref])
 
   const startCountdown = () => {
     let timeLeft = 60;
@@ -76,41 +113,84 @@ const BetaRegistrations: FC = () => {
   };
 
   const handleSubmit = async () => {
+    const toastId = toast.loading('Processing registration...')
     setIsLoading(true)
 
     try {
-      const { error } = await supabase
+      // First check if email exists
+      const { data: existingUser, error: checkError } = await supabase
         .from('beta_registrations')
-        .insert([{
-          full_name: formData.fullName,
-          country: formData.country,
-          heard_from: formData.heardFrom,
-          organization: formData.organization,
-          email: formData.email,
-          status: 'pending',
-          registered_at: new Date().toISOString()
-        }])
+        .select('email')
+        .eq('email', formData.email.toLowerCase())
+        .single()
 
-      if (error) throw error
+      if (checkError && checkError.code !== 'PGRST116') {
+        console.error('Error checking user:', checkError)
+        toast.error('Something went wrong', { id: toastId })
+        return
+      }
 
-      // Success animation
-      setCurrentField(5)
-      
-      // Start countdown
-      let timeLeft = 60;
-      const timer = setInterval(() => {
-        timeLeft -= 1;
-        setCountdown(timeLeft);
-        
-        if (timeLeft === 0) {
-          clearInterval(timer);
-          router.push('/');
+      // If user doesn't exist, create registration
+      if (!existingUser) {
+        const { error: registrationError } = await supabase
+          .from('beta_registrations')
+          .insert([{
+            full_name: formData.fullName,
+            country: formData.country,
+            heard_from: formData.heardFrom,
+            organization: formData.organization,
+            email: formData.email.toLowerCase(),
+            status: 'pending',
+            registered_at: new Date().toISOString()
+          }])
+
+        if (registrationError) {
+          throw registrationError
         }
-      }, 1000);
+      }
+
+      // Handle referral if exists
+      if (referrer) {
+        // Check if referral already exists
+        const { data: existingReferral, error: referralCheckError } = await supabase
+          .from('referrals')
+          .select('*')
+          .eq('referrer_email', referrer)
+          .eq('referred_email', formData.email.toLowerCase())
+          .single()
+
+        if (referralCheckError && referralCheckError.code !== 'PGRST116') {
+          console.error('Error checking referral:', referralCheckError)
+        }
+
+        // Only create referral if it doesn't exist
+        if (!existingReferral) {
+          const { error: referralError } = await supabase
+            .from('referrals')
+            .insert([{
+              referrer_email: referrer,
+              referred_email: formData.email.toLowerCase(),
+              status: 'completed',
+              created_at: new Date().toISOString()
+            }])
+
+          if (referralError) {
+            console.error('Referral error:', referralError)
+            // Don't fail the registration if referral fails
+          } else {
+            // Trigger leaderboard update
+            fetchLeaderboard()
+          }
+        }
+      }
+
+      setCurrentField(5)
+      startCountdown()
+      toast.success('Registration successful!', { id: toastId })
 
     } catch (error) {
-      console.error('Error submitting beta registration:', error)
-      toast.error('Failed to submit registration. Please try again.')
+      console.error('Registration error:', error)
+      toast.error('Something went wrong', { id: toastId })
     } finally {
       setIsLoading(false)
     }
@@ -323,48 +403,69 @@ const BetaRegistrations: FC = () => {
         .from('referrals')
         .select(`
           referrer_email,
-          beta_registrations:beta_registrations!referrals_referrer_email_fkey (
-            full_name
+          beta_registrations!referrals_referrer_email_fkey (
+            full_name,
+            email
           )
         `)
         .eq('status', 'completed')
 
-      if (referralError) throw referralError
+      if (referralError) {
+        console.error('Error fetching referrals:', referralError)
+        return
+      }
 
-      // Count referrals for each referrer
-      const referralCounts = (referralData || []).reduce((acc: { [key: string]: any }, curr: any) => {
-        const email = curr.referrer_email
-        if (!acc[email]) {
-          acc[email] = {
-            full_name: curr.beta_registrations?.full_name || 'Unknown',
+      if (!referralData?.length) {
+        setLeaderboardData([])
+        return
+      }
+
+      // Process referrals with proper type checking
+      const referralMap = new Map<string, { full_name: string; count: number }>()
+      
+      referralData.forEach((referral: any) => {
+        const email = referral.referrer_email
+        const referrerInfo = referral.beta_registrations
+
+        if (!referralMap.has(email) && referrerInfo && typeof referrerInfo.full_name === 'string') {
+          referralMap.set(email, {
+            full_name: referrerInfo.full_name || email,
             count: 0
-          }
+          })
         }
-        acc[email].count++
-        return acc
-      }, {})
 
-      // Convert to array and sort
-      const formattedData = Object.entries(referralCounts)
-        .map(([email, data]: [string, any]) => ({
+        const current = referralMap.get(email)
+        if (current) {
+          current.count++
+          referralMap.set(email, current)
+        }
+      })
+
+      // Convert to leaderboard format
+      const leaderboard = Array.from(referralMap.entries())
+        .map(([email, data]) => ({
+          email,
           full_name: data.full_name,
           referral_count: data.count,
-          email,
-          rank: 0 // Will be set in next map
+          rank: 0
         }))
         .sort((a, b) => b.referral_count - a.referral_count)
         .map((item, index) => ({
           ...item,
           rank: index + 1
         }))
-        .slice(0, 100)
 
-      setLeaderboardData(formattedData)
+      setLeaderboardData(leaderboard)
     } catch (error) {
-      console.error('Error fetching leaderboard:', error)
-      toast.error('Failed to load leaderboard')
+      console.error('Error processing leaderboard:', error)
     }
   }
+
+  useEffect(() => {
+    if (showLeaderboard) {
+      fetchLeaderboard()
+    }
+  }, [showLeaderboard])
 
   useEffect(() => {
     return () => {
@@ -556,21 +657,6 @@ const BetaRegistrations: FC = () => {
                             </button>
                           </div>
                         </div>
-
-                        {/* Leaderboard Button */}
-                        <div className="mt-4 flex justify-center">
-                          <button
-                            onClick={() => {
-                              setShowLeaderboard(true);
-                              fetchLeaderboard();
-                            }}
-                            className="px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 rounded-lg
-                                     text-purple-300 text-sm transition-colors border border-purple-500/20
-                                     flex items-center gap-2"
-                          >
-                            <span>🏆</span> View Leaderboard
-                          </button>
-                        </div>
                       </motion.div>
                       
                       {/* Countdown Timer */}
@@ -634,35 +720,43 @@ const BetaRegistrations: FC = () => {
               </button>
             </div>
 
-            <div className="space-y-3">
-              {leaderboardData.map((item) => (
-                <div
-                  key={item.rank}
-                  className={`flex items-center gap-4 p-3 rounded-lg bg-purple-500/5 border border-purple-500/10
-                             ${item.email === formData.email ? 'bg-purple-500/20' : ''}`}
-                >
-                  <div className="text-lg font-bold text-purple-400 w-8">
-                    #{item.rank}
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-white font-medium">
-                      {item.full_name}
-                      {item.email === formData.email && (
-                        <span className="ml-2 text-xs text-purple-400">(You)</span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="text-purple-300">
-                    {item.referral_count} {item.referral_count === 1 ? 'referral' : 'referrals'}
-                  </div>
-                </div>
-              ))}
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-white mb-6">
+                URA Referral Leaderboard
+              </h2>
 
-              {leaderboardData.length === 0 && (
-                <div className="text-center text-gray-400 py-8">
-                  No referrals yet. Be the first one!
-                </div>
-              )}
+              <div className="space-y-3">
+                {leaderboardData.length > 0 ? (
+                  leaderboardData.map((item) => (
+                    <div
+                      key={item.email}
+                      className={`flex items-center gap-4 p-4 rounded-lg 
+                        ${item.email === formData.email 
+                          ? 'bg-purple-500/20 border border-purple-500/30' 
+                          : 'bg-purple-500/5 border border-purple-500/10'}`}
+                    >
+                      <div className="text-lg font-bold text-purple-400 w-8">
+                        #{item.rank}
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-white font-medium">
+                          {item.full_name}
+                          {item.email === formData.email && (
+                            <span className="ml-2 text-sm text-purple-400">(You)</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-purple-300 font-medium">
+                        {item.referral_count} {item.referral_count === 1 ? 'referral' : 'referrals'}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center text-gray-400 py-8">
+                    No referrals yet. Be the first to refer!
+                  </div>
+                )}
+              </div>
             </div>
           </motion.div>
         </motion.div>
