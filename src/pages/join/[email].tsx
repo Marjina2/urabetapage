@@ -92,11 +92,8 @@ const JoinWithReferral: FC<Props> = ({ email: initialEmail }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
-    paths: [
-      { params: { email: 'default' } },
-      { params: { email: 'signup' } }
-    ],
-    fallback: true
+    paths: [], // Don't prerender any paths
+    fallback: 'blocking' // Enable blocking fallback
   }
 }
 

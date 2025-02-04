@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 
 export async function middleware(request: NextRequest) {
-  // Skip middleware for static files and public routes
+  // Update publicPaths to explicitly include join routes
   const publicPaths = [
     '/_next',
     '/api',
@@ -12,16 +12,17 @@ export async function middleware(request: NextRequest) {
     '/favicon.ico',
     '/robots.txt',
     '/sitemap',
-    '/join',
-    '/',
-    '/auth',
-    '/login',
-    '/register',
+    '/join',  // Base join path
     '/terms',
     '/privacy',
     '/contact',
     '/index.html'
   ]
+
+  // Special handling for join/[email] routes
+  if (request.nextUrl.pathname.startsWith('/join/')) {
+    return NextResponse.next()
+  }
 
   if (publicPaths.some(path => request.nextUrl.pathname.startsWith(path))) {
     return NextResponse.next()
@@ -50,6 +51,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|images|static|api).*)'
+    '/((?!_next/static|_next/image|favicon.ico|images|static|api|join/.*|join).*)'
   ]
 } 
